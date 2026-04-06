@@ -1,94 +1,195 @@
-const multiAccountManager = require("../../bot/login/multiAccountManager.js");
-
-module.exports = {
-	config: {
-		name: "account",
-		version: "1.0",
-		author: "NeoKEX",
-		countDown: 5,
-		role: 2, // Bot admin only
-		description: {
-			en: "Manage multiple accounts and check status"
-		},
-		category: "system",
-		guide: {
-			en: "{pn} status - Check multi-account status\n{pn} switch - Switch to next account\n{pn} reset - Reset failed accounts"
-		}
-	},
-
-	langs: {
-		en: {
-			statusTitle: "📊 Multi-Account Status",
-			totalAccounts: "Total accounts: %1",
-			currentAccount: "Current account: %1",
-			availableAccounts: "Available accounts: %1",
-			failedAccounts: "Failed accounts: %1",
-			switchCount: "Switch count: %1",
-			canSwitch: "Can switch: %1",
-			switching: "🔄 Switching to next account...",
-			switchSuccess: "✅ Account switch initiated",
-			switchFailed: "❌ Failed to switch account",
-			resetSuccess: "✅ Failed accounts reset",
-			noPermission: "❌ You don't have permission to use this command",
-			invalidUsage: "❌ Invalid usage. Use: status, switch, or reset"
-		}
-	},
-
-	onStart: async function ({ message, args, getLang }) {
-		const action = args[0]?.toLowerCase();
-
-		switch (action) {
-			case "status": {
-				const stats = multiAccountManager.getStats();
-				const statusMsg = [
-					getLang("statusTitle"),
-					"━━━━━━━━━━━━━━━",
-					getLang("totalAccounts", stats.totalAccounts),
-					getLang("currentAccount", stats.currentAccount || "None"),
-					getLang("availableAccounts", stats.availableAccounts.join(", ") || "None"),
-					getLang("failedAccounts", stats.failedAccounts.join(", ") || "None"),
-					getLang("switchCount", stats.switchCount),
-					getLang("canSwitch", stats.canSwitch ? "Yes" : "No (cooldown)"),
-					"━━━━━━━━━━━━━━━"
-				].join("\n");
-				return await message.reply(statusMsg);
-			}
-
-			case "switch": {
-				await message.reply(getLang("switching"));
-				const { switchToNextAccount } = global.GoatBot.reLoginBot ? 
-					require("../../bot/login/login.js") : { switchToNextAccount: null };
-				
-				if (global.switchToNextAccount) {
-					const result = await global.switchToNextAccount("Manual switch by admin");
-					if (result) {
-						return await message.reply(getLang("switchSuccess"));
-					} else {
-						return await message.reply(getLang("switchFailed"));
-					}
-				} else {
-					// Fallback: trigger account switch via global
-					multiAccountManager.isSwitching = true;
-					const nextAccount = multiAccountManager.nextAccount();
-					global.client.dirAccount = nextAccount;
-					
-					setTimeout(() => {
-						multiAccountManager.isSwitching = false;
-						global.GoatBot.reLoginBot();
-					}, 3000);
-					
-					return await message.reply(getLang("switchSuccess"));
-				}
-			}
-
-			case "reset": {
-				multiAccountManager.resetFailedAccounts();
-				return await message.reply(getLang("resetSuccess"));
-			}
-
-			default: {
-				return await message.reply(getLang("invalidUsage"));
-			}
-		}
-	}
-};
+[
+    {
+        "name": "datr",
+        "value": "W-HTacFmTxjIjpjiM5r51Yft",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1810053468.037,
+        "storeId": null
+    },
+    {
+        "name": "fr",
+        "value": "0PoBUMQkmzLus9ZEV.AWeAhA2b4DL3Ty1HGifJ0Gs_qhPvQNUIooQ3U1rs2hknQbZOhAM.Bp0-Fb..AAA.0.0.Bp1ALW.AWeLAS7scj_5gRryLnbQmAZ37ck",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1783278038.28,
+        "storeId": null
+    },
+    {
+        "name": "vpd",
+        "value": "v1%3B718x384x1.875",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "lax",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1780686039,
+        "storeId": null
+    },
+    {
+        "name": "xs",
+        "value": "46%3AwZHRBcJBhZO8_w%3A2%3A1775502027%3A-1%3A-1",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1807038029.25,
+        "storeId": null
+    },
+    {
+        "name": "fbl_st",
+        "value": "101638575%3BT%3A29591700",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "strict",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1807038039,
+        "storeId": null
+    },
+    {
+        "name": "locale",
+        "value": "en_US",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1776098333.905,
+        "storeId": null
+    },
+    {
+        "name": "m_pixel_ratio",
+        "value": "1",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": null,
+        "session": true,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "storeId": null
+    },
+    {
+        "name": "c_user",
+        "value": "100068914723350",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1807038029.23,
+        "storeId": null
+    },
+    {
+        "name": "dpr",
+        "value": "1.875",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1776098332,
+        "storeId": null
+    },
+    {
+        "name": "pas",
+        "value": "100068914723350%3Aa02zV3C0PK",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "lax",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1810062038.284,
+        "storeId": null
+    },
+    {
+        "name": "sb",
+        "value": "W-HTaXtfaAknEApUp0wNHNGr",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": true,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1810062029.249,
+        "storeId": null
+    },
+    {
+        "name": "wd",
+        "value": "384x853",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": null,
+        "session": true,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "storeId": null
+    },
+    {
+        "name": "wl_cbv",
+        "value": "v2%3Bclient_version%3A3135%3Btimestamp%3A1775502038",
+        "domain": ".facebook.com",
+        "hostOnly": false,
+        "path": "/",
+        "secure": true,
+        "httpOnly": false,
+        "sameSite": "no_restriction",
+        "session": false,
+        "firstPartyDomain": "",
+        "partitionKey": null,
+        "expirationDate": 1783278039,
+        "storeId": null
+    }
+]
